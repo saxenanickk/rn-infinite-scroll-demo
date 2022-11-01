@@ -7,52 +7,40 @@ import LinearGradient from 'react-native-linear-gradient';
 
 const PAGE_WIDTH = Dimensions.get('window').width;
 
+const itemSize = 100;
+const centerOffset = PAGE_WIDTH / 2 - itemSize / 2;
+
 const Home: FC = () => {
-  const itemSize = 130;
-  const centerOffset = PAGE_WIDTH / 2 - itemSize / 2;
+  const animationStyle = React.useCallback((value: number) => {
+    'worklet';
 
-  const animationStyle = React.useCallback(
-    (value: number) => {
-      'worklet';
+    const translateX = interpolate(
+      value,
+      [-1, 0, 1],
+      [0, centerOffset, centerOffset + itemSize * 1.5],
+    );
 
-      const itemGap = interpolate(value, [-1, 0, 1], [-5, 0, 10]);
+    const translateY = interpolate(value, [-1, 0, 1], [75, 50, 25]);
 
-      const translateX =
-        interpolate(value, [-1, 0, 1], [-itemSize, 0, itemSize]) +
-        centerOffset -
-        itemGap;
+    const scale = interpolate(value, [-1, 0, 1], [0.75, 1, 0.75]);
 
-      const translateY = interpolate(
-        value,
-        [-1, -0.5, 0, 0.5, 1],
-        [70, 50, 50, 40, 25],
-      );
+    const rotate = interpolate(value, [-1, 0, 1], [-10, 0, 10]);
 
-      const scale = interpolate(
-        value,
-        [-1, -0.5, 0, 0.5, 1],
-        [0.8, 0.9, 1.2, 0.9, 0.8],
-      );
-
-      const rotate = interpolate(value, [-1, 0, 1], [-10, 0, 10]);
-
-      return {
-        transform: [
-          {
-            rotate: `${rotate}deg`,
-          },
-          {
-            translateX,
-          },
-          {
-            translateY,
-          },
-          {scale},
-        ],
-      };
-    },
-    [centerOffset],
-  );
+    return {
+      transform: [
+        {
+          rotate: `${rotate}deg`,
+        },
+        {
+          translateX,
+        },
+        {
+          translateY,
+        },
+        {scale},
+      ],
+    };
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -87,11 +75,10 @@ const styles = StyleSheet.create({
     height: PAGE_WIDTH / 2,
   },
   itemContainer: {
+    width: itemSize,
+    aspectRatio: 4 / 5,
     borderRadius: 12,
-    justifyContent: 'center',
     overflow: 'hidden',
-    alignItems: 'center',
-    margin: 20,
     borderWidth: 0.5,
     borderColor: 'grey',
     shadowOffset: {
@@ -103,8 +90,9 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   image: {
-    width: '100%',
-    height: '100%',
+    width: undefined,
+    height: undefined,
+    flex: 1,
   },
 });
 
